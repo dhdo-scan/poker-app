@@ -1,36 +1,76 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# The Felt — Poker Club (clickable demo)
 
-## Getting Started
+A clickable demo of a private, invite-only web app for a recurring home poker
+game. It shows the concept end-to-end: an invite gate, a schedule, table
+sign-ups with a queue, a host forum with polls, and player account settings —
+the kind of thing that replaces a Snapchat group chat.
 
-First, run the development server:
+This is a **demo**. There is no real database, email auth, or invite emails.
+Everything runs on seed data + mock auth in the browser, persisted to
+`localStorage`, so it looks and clicks like the real thing and survives a
+refresh.
+
+## Run it
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3000. You'll land on the invite-gated sign-in screen.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Demo tips
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **Sign in** by picking any seeded player on `/login`. Marcus Dupré is the
+  host (admin); everyone else is a player.
+- **Role toggle** (top-right): flip between *Player* and *Admin* views without
+  switching accounts — handy for showing both sides during a pitch.
+- **Try the queue:** open *Friday Night Hold'em* — it's full, so you'll
+  *Join queue*. In the admin **Registrations** tab, remove a seated player and
+  watch the next person get promoted automatically.
+- **Invite flow:** the admin **Invites** tab has two working demo links. Open
+  one (e.g. `/invite/saints-gold-2026`) to create a new account.
+- **Reset demo data:** admin → **Reset demo data** restores the original seed
+  and clears `localStorage`. Great for re-running the pitch.
 
-## Learn More
+## Stack
 
-To learn more about Next.js, take a look at the following resources:
+- **Next.js (App Router) + TypeScript**
+- **Tailwind CSS + shadcn/ui** (Base UI components)
+- **Zustand** store seeded from `lib/seed.ts`, persisted to `localStorage`
+  (`lib/store.ts`). No server, no DB, no API routes.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Design: a dark-first New Orleans Saints palette (black + old gold), mobile-first
+since players open it on their phones. Felt green is scoped to the game-detail
+and admin Registrations table views only.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Project map
 
-## Deploy on Vercel
+```
+app/
+  login/                 "sign in as" picker (mock auth)
+  invite/[token]/        accept an invite -> create account -> session
+  (app)/                 session-gated routes (redirect to /login without one)
+    page.tsx             dashboard
+    calendar/            upcoming games
+    games/[id]/          game detail + felt table + register/queue/drop
+    forum/ , forum/[id]/ posts + polls
+    settings/            edit name, read-only email, own private P/L
+    admin/               admin-only: players, invites, games, registrations, forum, reset
+lib/
+  types.ts  seed.ts  store.ts  selectors.ts  privacy.ts  format.ts  status.ts
+components/  shared UI (felt-table, game-card, poll-view, confirm-dialog, ...) + ui/ (shadcn)
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## What's faked vs. production
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Everything below is faked for the demo and is what it becomes if this goes
+real. None of it is needed for the demo to tell the story.
+
+| Area | Demo | Production |
+| --- | --- | --- |
+| **Auth** | "sign in as" picker | Real email auth (magic link or password) |
+| **Invites** | Seeded valid tokens | Server-validated single-use tokens with expiry; real invite emails |
+| **Storage** | `localStorage` store | A real database (e.g. Postgres/Supabase) with per-user rows |
+| **Privacy** | UI hides others' `email` / `profitLoss` | Enforced server-side (row/column-level security) so private fields can't be queried by other players at all |
+| **Winnings / P&L** | Admin types the numbers in | Optionally auto-computed from per-game buy-in / cash-out results |
