@@ -3,7 +3,8 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { ChevronRight, Lock } from "lucide-react";
-import { Brand } from "@/components/brand";
+import { BrandHero } from "@/components/brand-hero";
+import { SuitBackdrop } from "@/components/suit-backdrop";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { useStore } from "@/lib/store";
@@ -27,22 +28,11 @@ export default function LoginPage() {
 
   return (
     <div className="relative flex min-h-screen flex-1 flex-col items-center justify-center overflow-hidden px-4 py-10">
-      {/* Subtle gold glow on black — no felt green here (scoped to game views). */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 opacity-60"
-        style={{
-          background:
-            "radial-gradient(60% 50% at 50% 0%, rgba(211,188,141,0.10), transparent 70%)",
-        }}
-      />
+      <SuitBackdrop />
 
       <div className="relative z-10 w-full max-w-sm">
-        <div className="mb-8 flex flex-col items-center gap-3 text-center">
-          <Brand href="/login" />
-          <p className="text-sm text-muted-foreground">
-            Private, invite-only club. Members only.
-          </p>
+        <div className="mb-8">
+          <BrandHero tagline="Private, invite-only club. Members only." />
         </div>
 
         <div className="rounded-xl bg-card p-1.5 ring-1 ring-border">

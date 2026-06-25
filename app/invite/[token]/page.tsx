@@ -5,7 +5,8 @@ import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Ban, UserPlus } from "lucide-react";
-import { Brand } from "@/components/brand";
+import { BrandHero } from "@/components/brand-hero";
+import { SuitBackdrop } from "@/components/suit-backdrop";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -40,18 +41,11 @@ export default function InvitePage() {
 
   return (
     <div className="relative flex min-h-screen flex-1 flex-col items-center justify-center overflow-hidden px-4 py-10">
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 opacity-60"
-        style={{
-          background:
-            "radial-gradient(60% 50% at 50% 0%, rgba(211,188,141,0.10), transparent 70%)",
-        }}
-      />
+      <SuitBackdrop />
 
       <div className="relative z-10 w-full max-w-sm">
-        <div className="mb-8 flex justify-center">
-          <Brand href="/login" />
+        <div className="mb-8">
+          <BrandHero />
         </div>
 
         {valid ? (
